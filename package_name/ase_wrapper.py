@@ -1,6 +1,21 @@
 import matplotlib.pyplot as plt
 from ase.visualize.plot import plot_atoms
 
+import sys
+from functools import reduce
+from operator import add
+from typing import Iterable, Optional, Set, Union
+
+from simphony_osp.namespaces import owl
+from simphony_osp.ontology.attribute import OntologyAttribute
+from simphony_osp.ontology.composition import Composition
+from simphony_osp.ontology.entity import OntologyEntity
+from simphony_osp.ontology.individual import OntologyIndividual
+from simphony_osp.ontology.oclass import OntologyClass
+from simphony_osp.ontology.relationship import OntologyRelationship
+from simphony_osp.ontology.restriction import Restriction
+
+
 # TODO: - Add function to retrieve atom properties from UUID
 #       - Visualize UUID with native ASE GUI
 #       - Integrate data properties with CUDS
@@ -57,3 +72,68 @@ class ASEWrapper:
 
         # Show the plot
         plt.show()
+
+    # def get_uuid_label(entity: OntologyEntity) -> Optional[str]:
+    #     """
+    #     Get the UUID label from an ontology entity if it has one assigned.
+    #
+    #     Args:
+    #         entity (OntologyEntity): The ontology entity to extract the UUID label from.
+    #
+    #     Returns:
+    #         Optional[str]: The UUID label if present, otherwise None.
+    #     """
+    #     # Check if the entity has a label property representing the UUID
+    #     uuid_label = entity.label
+    #     if uuid_label is not None:
+    #         return uuid_label
+    #     else:
+    #         return None
+
+    from typing import Optional
+    from simphony_osp.ontology.entity import OntologyEntity
+    from simphony_osp.ontology.individual import OntologyIndividual
+
+    def get_identifier(entity: OntologyEntity) -> Optional[str]:
+        """
+        Get the identifier (UUID) for an ontology entity if it has one assigned.
+
+        Args:
+            entity (OntologyEntity): The ontology entity to extract the identifier from.
+
+        Returns:
+            Optional[str]: The identifier (UUID) if present, otherwise None.
+        """
+        # Check if the entity is an individual and has an identifier
+        if isinstance(entity, OntologyIndividual):
+            return entity.uid
+        else:
+            return None
+
+
+    def get_simulation_details(atoms, opt, uuid):
+
+        """ TODO: - this is pretty basic and needs refining
+                  - how is this different to a SPARQL query of the CUDS properties
+                  if you add the simulation data to a CUDS? """
+        
+        # Find the index of the atom with the specified UUID
+        index = atoms.info['uuids'].index(uuid)
+
+        details = {
+            'forces': atoms.get_forces()[index],
+            'energy': atoms.get_potential_energy(),
+            'time_step': opt.get_number_of_steps(),
+        }
+
+        # Print the simulation details
+        print(f"Simulation Details for Atom with UUID '{uuid}':")
+        print(f"Forces: {details['forces']} eV/Ã")
+        print(f"Energy: {details['energy']} eV")
+        print(f"Time Step: {details['time_step']}")
+
+
+
+
+
+
