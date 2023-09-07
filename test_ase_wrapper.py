@@ -13,9 +13,9 @@ uuids = ['290ad2a7-2fcb-4da3-8669-a43493b3f915', '290ad2a7-2fcb-4da3-8669-a43493
 
 ase_wrapper = ASEWrapper()
 
-ase_wrapper.add_uuid_to_atoms(atoms, uuids)
+ase_wrapper.add_uuid(atoms, uuids)
 
 ase_wrapper.print_uuid(atoms)
 
-ase_wrapper.view_uuids(atoms)
+ase_wrapper.view_uuid(atoms)
 
